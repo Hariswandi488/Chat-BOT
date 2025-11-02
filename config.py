@@ -1,0 +1,4 @@
+verify_token = "testing"
+whatapps_token = "EAALjnH7JPo8BP9IZBTh8tWRhNSAZCHeXsUuX5LbRo1RUKSuGfzsEIVHK167NAI85imbPJnhzn0XSgb7KVwltvlyt0WZBHGooh1KokXO3GVGQHkkwBlmH5p30E205E8g1YlVmLGdOontt5S4eMQWVekS5CmGGvJZBfbIx6c5iBoZBPzlZAku3wpVcgqVz2fPQZDZD"
+phone_id = "875624918960314"
+wa_phone_number_H = 6285187367024
