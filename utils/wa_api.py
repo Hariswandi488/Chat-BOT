@@ -1,6 +1,7 @@
 import requests
 import config
 from app import app
+from app import storage
 from handler import Money
 
 COMMANDS = {
@@ -8,7 +9,12 @@ COMMANDS = {
     "/simpan" : "tambah",
     "/ambil" : "kurang",
     "/pakai" : "kurang",
-    "/cek" : "cek"
+    "/cek" : "cek",
+    "/c" : "cek",
+    "/histori" : "histori",
+    "/history" : "histori",
+    "/storage" : "storage",
+    "/db" : "storage"
 }
 
 @app.route("/webhook", methods=["POST"])
@@ -31,9 +37,7 @@ def send_message(to, message):
     print("Status Balas", r.status_code, r.text)
 
 def Prosess_Command(to, message):
-    split_text = message.split()
-    cmd = split_text[0].lower()
-    amount = int(split_text[1])
+    cmd, _, _ = prosess_chat(message)
 
     if not cmd.startswith("/"):
         send_message(to, f"Pesan Mu Tersampaikan\n\nPesan Mu: {message}")
@@ -45,5 +49,32 @@ def Prosess_Command(to, message):
         return
     
     if actions == "tambah":
-        print(amount)
-        Money.add_money(to, amount)
+        _, amount, alasan = prosess_chat(message)
+        Money.add_money(to, amount, alasan)
+    
+    elif actions == "kurang":
+        _, amount, alasan = prosess_chat(message)
+        Money.take_money(to, amount, alasan)
+
+    elif actions == "histori":
+        Money.cek_money_history(to, message)
+    
+    elif actions == "storage":
+        split = message.split()
+        storages = split[1]
+        storage(to, storages)
+
+
+def prosess_chat(message):
+    split_text = message.split()
+    cmd = split_text[0].lower()
+    if len(split_text) > 1:
+        if isinstance(split_text[1], int):
+            amount = int(split_text[1]) if len(split_text) > 1 else 0
+        else:
+            amount = int(split_text[1]) if len(split_text) > 1 else "not amout"
+    else:
+        amount = "unknown"
+
+    alasan = " ".join(split_text[2:]) if len(split_text) > 2 else "Tanpa Alasan"
+    return cmd, amount, alasan
